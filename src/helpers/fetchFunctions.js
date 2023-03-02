@@ -11,3 +11,4 @@ export const fetchProductsList = async (findThis) => {
   const data = await response.json(); console.log(data);
   return data.results;
 };
+//havia ocorrido um erro de Cannot find module '../mocks/fetchSimulator'
