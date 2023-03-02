@@ -3,27 +3,32 @@ import { fetchProductsList } from '../helpers/fetchFunctions';
 import computadorSearch from './mocks/search';
 
 describe('Teste a função fetchProductsList', () => {
-  it('fetchProductsList é uma função', () => {
-    expect(typeof fetchProductsList).toBe('function')
-  });
+it('fetchProductsList é uma função', async () => {
+expect.assertions(1);
+const result = await fetchProductsList();
+expect(typeof result).toBe('function')
+});
 
-  it('fetch é chamado ao executar fetchProductsList', async () => {
-    await fetchProductsList('computador')
-    expect(fetch).toHaveBeenCalled()
-  });
+it('Teste se, ao chamar a função fetchProductsList com o argumento computador', async () => {
+const searchTerm = 'computador';
+jest.spyOn(global, 'fetch');
+await fetchProductsList(searchTerm);
+expect(fetch).toHaveBeenCalled();
+expect(fetch).toHaveBeenCalledWith(https://api.mercadolibre.com/sites/MLB/search?q=${searchTerm});
+global.fetch.mockRestore();
+});
 
-  it('fetch é chamado com o endpoint correto ao executar fetchProductsList', async () => {
-    await fetchProductsList('computador')
-    expect(fetch).toHaveBeenCalledWith('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  });
+it('Teste se o retorno da função fetchProductsList com o argumento computador', async () => {
+const searchTerm = 'computador';
+const expected = computadorSearch;
+jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve({ json: () => Promise.resolve(expected) }));
+const result = await fetchProductsList(searchTerm);
+expect(result).toEqual(expected);
+global.fetch.mockRestore();
+});
 
-  it('a estrutura de dados retornado é correta ao chamar a função fetchProductsList', async () => {
-    const computadorArgument = await fetchProductsList('computador')
-    expect(computadorArgument).toEqual(computadorSearch)
-  });
-
-  it('retorna um erro se a função fetchProductsList não tiver argumento', async () => {
-    const withoutArgument = await fetchProductsList()
-    expect(withoutArgument).rejects.toThrow('Termo de busca não informado')
-  });
+it('Teste se, ao chamar a função fetchProductsList sem argumento, retorna um erro com mensagem', async () => {
+expect.assertions(1);
+await expect(fetchProductsList()).rejects.toThrow('Termo de busca não informado');
+});
 });
