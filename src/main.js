@@ -1,7 +1,7 @@
 import { searchCep } from './helpers/cepFunctions';
 import './style.css';
 import { fetchProductsList } from './helpers/fetchFunctions';
-import { createProductElement } from './helpers/shopFunctions';
+import { createProductElement, savedCartProducts } from './helpers/shopFunctions';
 
 function displayProducts() {
   const loaded = document.createElement('p');
@@ -32,3 +32,5 @@ function displayProducts() {
 displayProducts();
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
+
+savedCartProducts();
