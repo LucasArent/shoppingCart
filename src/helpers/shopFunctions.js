@@ -1,10 +1,9 @@
-import { removeCartID } from './cartFunctions';
+import { removeCartID, saveCartID } from './cartFunctions';
+import { fetchProduct } from './fetchFunctions';
 
 // Esses comentários que estão antes de cada uma das funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições!
-
 // Fique a vontade para modificar o código já escrito e criar suas próprias funções!
-
 /**
  * Função responsável por criar e retornar o elemento de imagem do produto.
  * @param {string} imageSource - URL da imagem.
@@ -16,7 +15,6 @@ const createProductImageElement = (imageSource) => {
   img.src = imageSource.replace('I.jpg', 'O.jpg');
   return img;
 };
-
 /**
  * Função responsável por criar e retornar qualquer elemento.
  * @param {string} element - Nome do elemento a ser criado.
@@ -30,7 +28,6 @@ export const createCustomElement = (element, className, innerText = '') => {
   e.innerText = innerText;
   return e;
 };
-
 /**
  * Função que recupera o ID do produto passado como parâmetro.
  * @param {Element} product - Elemento do produto.
@@ -39,7 +36,6 @@ export const createCustomElement = (element, className, innerText = '') => {
 export const getIdFromProduct = (product) => (
   product.querySelector('span.product__id').innerText
 );
-
 /**
  * Função que remove o produto do carrinho.
  * @param {Element} li - Elemento do produto a ser removido do carrinho.
@@ -49,7 +45,6 @@ const removeCartProduct = (li, id) => {
   li.remove();
   removeCartID(id);
 };
-
 /**
  * Função responsável por criar e retornar um product do carrinho.
  * @param {Object} product - Objeto do produto.
@@ -63,34 +58,26 @@ export const createCartProductElement = ({ id, title, price, pictures }) => {
   const li = document.createElement('li');
   li.className = 'cart__product';
   const imgContainer = createCustomElement('div', 'cart__product__image-container');
-
   const img = createProductImageElement(pictures[0].url);
   imgContainer.appendChild(img);
-
   const img2 = createProductImageElement((pictures[1] || pictures[0]).url);
   imgContainer.appendChild(img2);
-
   li.appendChild(imgContainer);
-
   const infoContainer = createCustomElement('div', 'cart__product__info-container');
   infoContainer.appendChild(createCustomElement('span', 'product__title', title));
   const priceElement = createCustomElement('span', 'product__price', 'R$ ');
   priceElement.appendChild(createCustomElement('span', 'product__price__value', price));
   infoContainer.appendChild(priceElement);
-
   li.appendChild(infoContainer);
-
   const removeButton = createCustomElement(
     'i',
     'material-icons cart__product__remove',
     'delete',
   );
   li.appendChild(removeButton);
-
   li.addEventListener('click', () => removeCartProduct(li, id));
   return li;
 };
-
 /**
  * Função responsável por criar e retornar o elemento do produto.
  * @param {Object} product - Objeto do produto.
@@ -100,28 +87,67 @@ export const createCartProductElement = ({ id, title, price, pictures }) => {
  * @param {number} product.price - Preço do produto.
  * @returns {Element} Elemento de produto.
  */
+
 export const createProductElement = ({ id, title, thumbnail, price }) => {
   const section = document.createElement('section');
   section.className = 'product';
-
   section.appendChild(createCustomElement('span', 'product__id', id));
-
   const thumbnailContainer = createCustomElement('div', 'img__container');
   thumbnailContainer.appendChild(createProductImageElement(thumbnail));
   section.appendChild(thumbnailContainer);
-
   section.appendChild(createCustomElement('span', 'product__title', title));
-
   const priceElement = createCustomElement('span', 'product__price', 'R$ ');
   priceElement.appendChild(createCustomElement('span', 'product__price__value', price));
   section.appendChild(priceElement);
-
   const cartButton = createCustomElement(
     'button',
     'product__add',
     'Adicionar ao carrinho!',
   );
+  const inCart = document.querySelector('.cart__products');
+
   section.appendChild(cartButton);
 
+  const addCartProduct = async () => {
+    const products = await fetchProduct(id);
+    saveCartID(id);
+    const productCart = createCartProductElement(products); // estava dando erro no cypress assertexpected undefined, acho que era porque falta o import do removeCartId
+    inCart.appendChild(productCart);
+  };
+
+  cartButton.addEventListener('click', addCartProduct);
+
   return section;
+};
+
+const getProductsSection = document.querySelector('.products');
+
+const wait = 2000;
+
+const removeLoading = () => {
+  const getLoading = document.querySelector('.loading');
+  return getProductsSection.removeChild(getLoading);
+};
+const createLoading = () => {
+  const createLoadingP = document.createElement('p');
+  createLoadingP.className = 'loading';
+  createLoadingP.innerText = 'carregando...';
+  getProductsSection.appendChild(createLoadingP);
+  setTimeout(() => removeLoading(), wait);
+};
+export const createError = () => {
+  const createErrorP = document.createElement('p');
+  createErrorP.className = 'error';
+  createErrorP.innerText = 'Algum erro ocorreu, recarregue a página e tente novamente';
+  getProductsSection.appendChild(createErrorP);
+};
+export const displayProducts = async () => {
+  try {
+    const productList = await fetchProductsList('computador');
+    createLoading();
+    setTimeout(() => productList.forEach((product) => getProductsSection
+      .appendChild(createProductElement(product))), wait);
+  } catch {
+    createError();
+  }
 };
