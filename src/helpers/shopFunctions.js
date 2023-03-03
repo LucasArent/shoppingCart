@@ -159,4 +159,4 @@ const idmap = cartProductsIds.map((id) => fetchProduct(id));
 export const savedCartProducts = () => Promise.all(idmap)
   .then((products) => products.forEach((product) => inCart
     .appendChild(createCartProductElement(product))));
-//fui na mentoria e resolvi o erro com o Moises, eu estava passando a função sem ser em um escopo global
+// fui na mentoria e resolvi o erro com o Moises, eu estava passando a função sem ser em um escopo global
