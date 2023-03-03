@@ -5,7 +5,7 @@ import { createProductElement } from './helpers/shopFunctions';
 
 function displayProducts() {
   const loaded = document.createElement('p');
-  loaded.textContent = 'carregando...';
+  loaded.innerHTML = 'carregando...';
   loaded.classList.add('loading');
   document.body.appendChild(loaded);
 
@@ -20,7 +20,7 @@ function displayProducts() {
     .catch((error) => {
       console.log(error.message);
       const erro = document.createElement('p');
-      erro.textContent = 'Algum erro ocorreu, recarregue a página e tente novamente';
+      erro.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente';
       erro.classList.add('error');
       document.body.appendChild(erro);
     })
