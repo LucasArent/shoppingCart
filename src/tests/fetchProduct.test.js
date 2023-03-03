@@ -26,3 +26,4 @@ describe('Teste a função fetchProduct', () => {
     await expect(fetchProduct()).rejects.toThrow('ID não informado');
   });
 });
+// bem parecido com o 1 requisito
