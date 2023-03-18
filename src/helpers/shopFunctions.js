@@ -112,7 +112,7 @@ export const createProductElement = ({ id, title, thumbnail, price }) => {
   const addCartProduct = async () => {
     const products = await fetchProduct(id);
     saveCartID(id);
-    const productCart = createCartProductElement(products); // estava dando erro no cypress assertexpected undefined, acho que era porque falta o import do removeCartId
+    const productCart = createCartProductElement(products);
     inCart.appendChild(productCart);
   };
 
@@ -160,3 +160,4 @@ export const savedCartProducts = () => Promise.all(idmap)
   .then((products) => products.forEach((product) => inCart
     .appendChild(createCartProductElement(product))));
 // fui na mentoria e resolvi o erro com o Moises, eu estava passando a função sem ser em um escopo global
+// estava dando erro no cypress assertexpected undefined, acho que era porque falta o import do removeCartId
