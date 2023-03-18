@@ -34,3 +34,14 @@ displayProducts();
 document.querySelector('.cep-button').addEventListener('click', searchCep);
 
 savedCartProducts();
+/*
+function bugFound() {
+  return (
+    <span>
+      Caso tenha encontrado algum erro, nos comunique:
+      <a href="12345@gmitos.coin">Enviar um e-mail</a>
+    </span>
+  );
+}
+
+*/

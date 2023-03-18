@@ -1,6 +1,7 @@
 import './mocks/fetchSimulator';
 import { fetchProductsList } from '../helpers/fetchFunctions';
 import product from './mocks/search';
+//import React, { useBox } from "react";
 
 describe('Teste a função fetchProductsList', () => {
   it('fetchProductsList é uma função', () => {
@@ -10,6 +11,7 @@ describe('Teste a função fetchProductsList', () => {
   it('fetch é chamado ao executar fetchProductsList', async () => {
     await fetchProductsList('computador')
     expect(fetch).toHaveBeenCalled()
+    console.log()
   });
 
   it('fetch é chamado com o endpoint correto ao executar fetchProductsList', async () => {
@@ -26,5 +28,21 @@ describe('Teste a função fetchProductsList', () => {
     await expect(fetchProductsList()).rejects.toThrow('Termo de busca não informado');
   });
 });
+/* teste de caixa de comentário sobre o produto
+function box() {
+  const [comment, setComment] = useBox("");
 
+  return (
+    <div>
+      <textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="De seu feedback sobre o produto..."
+      />
+      <button onClick={() => console.log(comment)}>Postar</button>
+    </div>
+  );
+}
+
+*/
   
